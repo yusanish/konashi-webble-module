@@ -188,8 +188,8 @@ class Konashi {
     this._state = {pioOutputs: 0,
                    pwmModes: 0};
 
-    for (let key in consts) {
-        this[key] = consts[key];
+    for (let key in this.consts) {
+        this[key] = this.consts[key];
     }
   }
 
@@ -319,7 +319,7 @@ class Konashi {
         that._c12c.pioPullUp.readValue()
           .then(v => {
             var data = v.getUint8(0);
-            if (mode == Konashi.PULLUP) {
+            if (mode == Konashi.consts.PULLUP) {
               data |= 0x01 << pin;
             } else {
               data &= ~(0x01 << pin);
@@ -351,7 +351,7 @@ class Konashi {
    * @returns {Promise<Void>} 
    */
   digitalWrite(pin, value) {
-    if (value == Konashi.HIGH) {
+    if (value == Konashi.consts.HIGH) {
       this._state.pioOutputs |= 0x01 << pin;
     } else {
       this._state.pioOutputs &= ~(0x01 << pin) & 0xff;
@@ -388,13 +388,13 @@ class Konashi {
   analogRead(pin) {
     var c;
     switch (pin) {
-      case Konashi.AIO0:
+      case Konashi.consts.AIO0:
         c = this._c12c.analogRead0;
         break;
-      case Konashi.AIO1:
+      case Konashi.consts.AIO1:
         c = this._c12c.analogRead1;
         break;
-      case Konashi.AIO2:
+      case Konashi.consts.AIO2:
         c = this._c12c.analogRead2;
         break;
     }
@@ -415,16 +415,16 @@ class Konashi {
    * @returns {Promise<Void>}
    */
   pwmMode(pin, mode) {
-    if (mode == Konashi.KONASHI_PWM_ENABLE || mode == Konashi.KONASHI_PWM_ENABLE_LED_MODE) {
+    if (mode == Konashi.consts.KONASHI_PWM_ENABLE || mode == Konashi.consts.KONASHI_PWM_ENABLE_LED_MODE) {
       this._state.pwmModes |= 0x01 << pin;
     } else {
       this._state.pwmModes &= ~(0x01 << pin) & 0xff;
     }
     var that = this,
         data = new Uint8Array([this._state.pwmModes]);
-    if (mode == Konashi.KONASHI_PWM_ENABLE_LED_MODE) {
+    if (mode == Konashi.consts.KONASHI_PWM_ENABLE_LED_MODE) {
         return this._c12c.pwmConfig.writeValue(data)
-          .then(() => that.pwmPeriod(pin, Konashi.KONASHI_PWM_LED_PERIOD))
+          .then(() => that.pwmPeriod(pin, Konashi.consts.KONASHI_PWM_LED_PERIOD))
           .then(() => that.pwmDuty(pin, 0));
     }
     return this._c12c.pwmConfig.writeValue(data);
@@ -485,7 +485,7 @@ class Konashi {
    */
   pwmWrite(pin, ratio) {
     ratio = Math.min(100, Math.max(0, ratio));
-    var duty = Konashi.KONASHI_PWM_LED_PERIOD * ratio / 100;
+    var duty = Konashi.consts.KONASHI_PWM_LED_PERIOD * ratio / 100;
     return this.pwmDuty(pin, duty);
   }
 
@@ -500,8 +500,8 @@ class Konashi {
    * @returns {Promise<Void>}
    */
   uartMode(mode) {
-    if (mode != Konashi.KONASHI_UART_DISABLE
-        && mode != Konashi.KONASHI_UART_ENABLE) {
+    if (mode != Konashi.consts.KONASHI_UART_DISABLE
+        && mode != Konashi.consts.KONASHI_UART_ENABLE) {
       return Promise.reject(new Error('Invalid UART mode.'));
     }
     return this._c12c.uartConfig.writeValue(new Uint8Array([mode]));
@@ -514,8 +514,8 @@ class Konashi {
    * @returns {Promise<Void>}
    */
   uartBaudRate(rate) {
-    if (rate != Konashi.KONASHI_UART_RATE_2K4
-        && rate != Konashi.KONASHI_UART_RATE_9K6) {
+    if (rate != Konashi.consts.KONASHI_UART_RATE_2K4
+        && rate != Konashi.consts.KONASHI_UART_RATE_9K6) {
       return Promise.reject(new Error('Invalid UART baud rate.'));
     }
     var data = new Uint8Array([(rate >> 8) & 0xff,
@@ -563,7 +563,7 @@ class Konashi {
    * @param {*} data 
    */
   _uartWrite(data) {
-    if (Konashi.KONASHI_UART_DATA_MAX_LENGTH < data.length) {
+    if (Konashi.consts.KONASHI_UART_DATA_MAX_LENGTH < data.length) {
       return Promise.reject(new Error('The data size has to be less then ' + Konashi.KONASHI_UART_DATA_MAX_LENGTH + '.'));
     }
     var writeData = new Uint8Array(data.length + 1);
@@ -585,25 +585,25 @@ class Konashi {
    * @returns {Promise<Void>}
    */
   i2cMode(mode) {
-    if (mode != Konashi.KONASHI_I2C_DISABLE
-        && mode != Konashi.KONASHI_I2C_ENABLE
-        && mode != Konashi.KONASHI_I2C_ENABLE_100K
-        && mode != Konashi.KONASHI_I2C_ENABLE_400K) {
+    if (mode != Konashi.consts.KONASHI_I2C_DISABLE
+        && mode != Konashi.consts.KONASHI_I2C_ENABLE
+        && mode != Konashi.consts.KONASHI_I2C_ENABLE_100K
+        && mode != Konashi.consts.KONASHI_I2C_ENABLE_400K) {
       return Promise.reject(new Error('Invalid I2C mode'));
     }
     return this._c12c.i2cConfig.writeValue(new Uint8Array([mode]));
   }
 
   i2cStopCondition() {
-    return this._i2cSendCondition(Konashi.KONASHI_I2C_STOP_CONDITION);
+    return this._i2cSendCondition(Konashi.consts.KONASHI_I2C_STOP_CONDITION);
   }
 
   i2cStartCondition() {
-    return this._i2cSendCondition(Konashi.KONASHI_I2C_STOP_CONDITION);
+    return this._i2cSendCondition(Konashi.consts.KONASHI_I2C_STOP_CONDITION);
   }
 
   i2cRestartCondition() {
-    return this._i2cSendCondition(Konashi.KONASHI_I2C_RESTART_CONDITION);
+    return this._i2cSendCondition(Konashi.consts.KONASHI_I2C_RESTART_CONDITION);
   }
 
   /**
@@ -613,9 +613,9 @@ class Konashi {
    * @returns {Promise<Void>}
    */
   _i2cSendCondition(condition) {
-    if (condition != Konashi.KONASHI_I2C_STOP_CONDITION
-        && condition != Konashi.KONASHI_I2C_START_CONDITION
-        && condition != Konashi.KONASHI_I2C_RESTART_CONDITION) {
+    if (condition != Konashi.consts.KONASHI_I2C_STOP_CONDITION
+        && condition != Konashi.consts.KONASHI_I2C_START_CONDITION
+        && condition != Konashi.consts.KONASHI_I2C_RESTART_CONDITION) {
       return Promise.reject(new Error('Invalid I2C condition.'));
     }
     return this._c12c.i2cStartStop.writeValue(new Uint8Array([condition]));
