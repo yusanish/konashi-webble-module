@@ -1,6 +1,6 @@
 {
   "name": "konashi-webble-module",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "konashi Web Bluetooth module (About konashi: https://konashi.ux-xu.com/)",
   "main": "main.js",
   "repository": {
