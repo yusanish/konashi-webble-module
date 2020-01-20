@@ -1,0 +1,14 @@
+{
+  "name": "konashi-web-bluetooth",
+  "version": "0.1.0",
+  "description": "konashi Web Bluetooth module",
+  "main": "main.js",
+  "keywords": [
+    "konashi",
+    "web-bluetooth",
+    "javascript",
+    "bluetooth"
+  ],
+  "author": "Yusaku Nishiwaki",
+  "license": "MIT"
+}
