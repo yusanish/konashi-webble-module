@@ -1,8 +1,12 @@
 {
-  "name": "konashi-web-bluetooth",
+  "name": "konashi-webble-module",
   "version": "0.1.0",
-  "description": "konashi Web Bluetooth module",
+  "description": "konashi Web Bluetooth module (About konashi: https://konashi.ux-xu.com/)",
   "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yusanish/konashi-webble-module"
+  },
   "keywords": [
     "konashi",
     "web-bluetooth",
@@ -10,5 +14,8 @@
     "bluetooth"
   ],
   "author": "Yusaku Nishiwaki",
-  "license": "MIT"
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/yusanish/konashi-webble-module/issues"
+  }
 }
